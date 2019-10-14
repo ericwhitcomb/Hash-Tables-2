@@ -51,8 +51,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
 
+        while current_pair is not None and current_pair.key != key:
+            current_pair = current_pair.next
+        
+        if current_pair is None:
+            pair = LinkedPair(key, value)
+            pair.next = self.storage[index]
+            self.storage[index] = pair
+        else:
+            current_pair.value = value
 
 
     def remove(self, key):
@@ -63,7 +73,21 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
+        last_pair = None
+
+        while current_pair is not None and current_pair.key != key:
+            last_pair = current_pair
+            current_pair = current_pair.next
+        
+        if current_pair is None:
+            print ("Warning: key " + str(key) + " not found")
+        else:
+            if last_pair is None:
+                self.storage[index] = current_pair.next
+            else:
+                last_pair.next = current_pair.next
 
 
     def retrieve(self, key):
@@ -74,7 +98,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
+
+        while current_pair is not None and current_pair.key != key:
+            current_pair = current_pair.next
+        
+        if current_pair is None:
+            return None
+        else:
+            return current_pair.value
 
 
     def resize(self):
@@ -84,8 +117,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        old_storage = self.storage
+        self.capacity = self.capacity * 2
+        self.storage = [None] * self.capacity
 
+        for index in range(0, len(old_storage)):
+            current_pair = old_storage[index]
+            while current_pair is not None:
+                self.insert(current_pair.key, current_pair.value)
+                current_pair = current_pair.next
 
 
 if __name__ == "__main__":
